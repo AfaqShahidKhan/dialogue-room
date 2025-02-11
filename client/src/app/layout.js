@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/ui/Header";
 import { Toaster } from "react-hot-toast";
-import Footer from "@/components/ui/Footer";
+import ClientLayout from "./ClientLayout";
 
 export const metadata = {
   title: {
@@ -29,8 +29,7 @@ export default function RootLayout({ children }) {
           <ReduxProvider>
             <Suspense fallback={<Loading />}>
               <Toaster />
-              {children}
-              <Footer/>
+              <ClientLayout>{children}</ClientLayout>
             </Suspense>
           </ReduxProvider>
         </ThemeProvider>

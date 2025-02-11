@@ -11,8 +11,10 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { signup } from "@/store/services/authService";
 import Header from "../ui/Header";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+  const router = useRouter();
   const { theme } = useTheme();
   const {
     register,
@@ -45,6 +47,7 @@ const Register = () => {
       if (response.success) {
         toast.success("Account created successfully!");
       }
+      router.push("/");
     } catch (error) {
       console.error("Error during form submission:", error);
       const errorMessage =

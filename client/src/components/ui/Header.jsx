@@ -19,7 +19,7 @@ const Header = () => {
 
   return (
     <header
-      className={`w-full p-4 shadow-md transition-colors duration-300 ${
+      className={`w-full p-4 shadow-sm transition-colors duration-300 sticky top-0 z-[99] ${
         isDarkMode
           ? "bg-dark-background text-dark-foreground"
           : "bg-light-background text-light-foreground"

@@ -11,8 +11,10 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { login } from "@/store/services/authService";
 import Header from "../ui/Header";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+  const router = useRouter();
   const { theme } = useTheme();
   const {
     register,
@@ -31,6 +33,7 @@ const Login = () => {
       if (response.success) {
         toast.success("Login successfully!");
       }
+      router.push('/')
     } catch (error) {
       console.error("Error during form submission:", error);
       const errorMessage =
