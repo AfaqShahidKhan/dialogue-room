@@ -28,7 +28,6 @@ export default function RootLayout({ children }) {
           <ReduxProvider>
             <Suspense fallback={<Loading />}>
               <Toaster />
-              <Header />
               {children}
             </Suspense>
           </ReduxProvider>

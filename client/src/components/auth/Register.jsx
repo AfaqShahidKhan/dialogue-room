@@ -9,6 +9,7 @@ import Checkbox from "@/components/ui/Checkbox";
 import { FaUser, FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { signup } from "@/store/services/authService";
 
 const Register = () => {
   const { theme } = useTheme();
@@ -29,13 +30,26 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    if (data.agree !== true) {
-      toast.error("Checkbox value is not registering as true.");
-      return;
+  const onSubmit = async (data) => {
+    try {
+      console.log("Form Data:", data);
+
+      if (data.agree !== true) {
+        toast.error("Checkbox value is not registering as true.");
+        return;
+      }
+
+      const response = await signup(data);
+
+      if (response.success) {
+        toast.success("Account created successfully!");
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      const errorMessage =
+        error.message || "An unexpected error occurred. Please try again.";
+      toast.error(errorMessage);
     }
-    toast.success("Account created successfully!");
   };
 
   const handleGoogleLogin = () => {

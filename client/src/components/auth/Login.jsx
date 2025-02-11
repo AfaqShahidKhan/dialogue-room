@@ -8,6 +8,8 @@ import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import { FaLock, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
+import { login } from "@/store/services/authService";
 
 const Login = () => {
   const { theme } = useTheme();
@@ -19,8 +21,21 @@ const Login = () => {
   const isDarkMode = theme === "dark";
   const themeColors = isDarkMode ? "dark" : "light";
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      console.log("Form Data:", data);
+
+      const response = await login(data);
+
+      if (response.success) {
+        toast.success("Login successfully!");
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      const errorMessage =
+        error.message || "An unexpected error occurred. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   const handleGoogleLogin = () => {
