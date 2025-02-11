@@ -1,0 +1,41 @@
+# Dialogue Room
+
+**Dialogue Room** is a real-time chat application built using the MERN stack (MongoDB, Express, React, Node.js). The app allows users to connect and chat with each other in real-time using **socket.io**. This project is designed to be simple yet powerful for building scalable and interactive chat applications.
+
+## Tech Stack
+
+- **Client**: React, Next.js, Redux, Tailwind CSS
+- **Server**: Node.js, Express, Socket.io
+- **Database**: MongoDB
+
+## Features
+
+- Real-time chat with socket.io
+- User authentication with JWT
+- Responsive UI with Tailwind CSS
+- Redux for state management
+- Email notifications for new messages
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (version 20.18.0 or later)
+- **MongoDB** (running locally or using a cloud service like MongoDB Atlas)
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/AfaqShahidKhan/dialogue-room.git
+cd dialogue-room
+npm install
+cd server
+npm install
+cd ..
+cd client
+npm install
+cd ..
+npm run dev
+
