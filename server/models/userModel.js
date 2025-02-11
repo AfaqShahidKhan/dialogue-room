@@ -26,9 +26,13 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    photo:{
-     type:String,
-     default: 'default.jpg'
+    photo: {
+      type: String,
+      default: "default.jpg",
+    },
+    agree: {
+      type: Boolean,
+      default: false,
     },
     password: {
       type: String,
@@ -57,7 +61,6 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

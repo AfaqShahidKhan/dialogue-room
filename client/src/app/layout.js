@@ -4,6 +4,7 @@ import Loading from "./loading";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/ui/Header";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Dialogue Room",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <ReduxProvider>
             <Suspense fallback={<Loading />}>
+              <Toaster />
               <Header />
               {children}
             </Suspense>
