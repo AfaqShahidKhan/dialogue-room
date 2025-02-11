@@ -15,7 +15,7 @@ console.log("curruntly running in--", process.env.NODE_ENV);
 console.log("Connecting to:", process.env.DATABASE_LOCAL);
 
 mongoose
-  .connect(process.env.DATABASE_LOCAL)
+  .connect(process.env.DATABASE_PROD || process.env.DATABASE_LOCAL)
   .then(() => console.log("DB connection successful!"));
 
 mongoose.connection.once("open", async () => {
