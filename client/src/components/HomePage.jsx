@@ -5,6 +5,8 @@ import Image from "next/image";
 
 const onlineDiscussion = "/images/pagesData/onlineDiscussion.jpg";
 const virtualConversation = "/images/pagesData/virtualConversation.jpg";
+const boyChatting = "/images/pagesData/boyChatting.jpg";
+
 const homeDataArray = [
   {
     title: "Instant Messaging",
@@ -111,6 +113,35 @@ const HomePage = () => {
                 Start Chatting
               </button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 ">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center">
+          <div className="w-full md:w-1/2 md:pl-10 text-center md:text-left">
+            <h2 className="text-3xl font-bold mb-4">Exchange Languages</h2>
+            <p className="text-lg ">
+              Connect with people worldwide and engage in meaningful language
+              exchanges. Whether you're practicing a new language, learning
+              about different cultures, or just having fun conversations,
+              Dialogue Room makes it simple and enjoyable for you to connect
+              with others.
+            </p>
+            <Link href="/search">
+              <button className="mt-6 px-6 py-3 font-semibold rounded-lg shadow-md  bg-dark-primary transition">
+                Find People
+              </button>
+            </Link>
+          </div>
+          <div className="w-full md:w-1/2">
+            <Image
+              src={boyChatting}
+              alt="Exchange Languages"
+              width={600}
+              height={400}
+              className="rounded-lg shadow-lg"
+            />
           </div>
         </div>
       </section>

@@ -10,6 +10,7 @@ import { FaLock, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { login } from "@/store/services/authService";
+import Header from "../ui/Header";
 
 const Login = () => {
   const { theme } = useTheme();
@@ -44,85 +45,88 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-muted">
-      <div className="max-w-md w-full p-6 bg-background rounded-lg shadow-md">
-        <h2
-          className={`text-${themeColors}-foreground text-2xl font-bold mb-6 text-center`}
-        >
-          Login to Your Account
-        </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
-            label="Email Address"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            className=""
-            required
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                message: "Invalid email address",
-              },
-            })}
-            error={errors.email}
-          />
-
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            required
-            className=""
-            {...register("password", { required: "Password is required" })}
-            error={errors.password}
-          />
-
-          <Button
-            type="submit"
-            className="w-full flex items-center justify-center bg-primary text-white"
+    <>
+      <Header />
+      <div className="min-h-screen flex justify-center items-center bg-muted">
+        <div className="max-w-md w-full p-6 bg-background rounded-lg shadow-md">
+          <h2
+            className={`text-${themeColors}-foreground text-2xl font-bold mb-6 text-center`}
           >
-            <FaLock className="mr-2" />
-            Login
-          </Button>
-        </form>
+            Login to Your Account
+          </h2>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Input
+              label="Email Address"
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              className=""
+              required
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Invalid email address",
+                },
+              })}
+              error={errors.email}
+            />
 
-        {/* Forgot Password Link */}
-        <div className="mt-4 text-center">
-          <Link
-            href="/forgot-password"
-            className={`text-${themeColors}-primary underline text-sm`}
-          >
-            Forgot Password?
-          </Link>
-        </div>
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              required
+              className=""
+              {...register("password", { required: "Password is required" })}
+              error={errors.password}
+            />
 
-        {/* Google Login */}
-        <div className="mt-6">
-          <Button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center bg-blue-600 text-white"
-          >
-            <FaGoogle className="mr-2" />
-            Login with Google
-          </Button>
-        </div>
-
-        <div className="mt-4 text-center">
-          <p className={`text-${themeColors}-foreground text-sm`}>
-            Don't have an account?
-            <Link
-              href="/register"
-              className={`text-${themeColors}-primary underline`}
+            <Button
+              type="submit"
+              className="w-full flex items-center justify-center bg-primary text-white"
             >
-              Register here
+              <FaLock className="mr-2" />
+              Login
+            </Button>
+          </form>
+
+          {/* Forgot Password Link */}
+          <div className="mt-4 text-center">
+            <Link
+              href="/forgot-password"
+              className={`text-${themeColors}-primary underline text-sm`}
+            >
+              Forgot Password?
             </Link>
-          </p>
+          </div>
+
+          {/* Google Login */}
+          <div className="mt-6">
+            <Button
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center bg-blue-600 text-white"
+            >
+              <FaGoogle className="mr-2" />
+              Login with Google
+            </Button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <p className={`text-${themeColors}-foreground text-sm`}>
+              Don't have an account?
+              <Link
+                href="/register"
+                className={`text-${themeColors}-primary underline`}
+              >
+                Register here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
