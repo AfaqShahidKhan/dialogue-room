@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/ui/Header";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/ui/Footer";
 
 export const metadata = {
   title: {
@@ -21,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/logos/logo.png" type="image/png" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="transition-colors duration-300">
         <ThemeProvider>
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
             <Suspense fallback={<Loading />}>
               <Toaster />
               {children}
+              <Footer/>
             </Suspense>
           </ReduxProvider>
         </ThemeProvider>
