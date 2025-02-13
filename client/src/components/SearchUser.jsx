@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+
 import { useForm } from "react-hook-form";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import { fetchAllUsers } from "@/store/services/userService";
+import toast from "react-hot-toast";
 
 const selectGenderOption = [
   { label: "Select Gender", value: "" },
@@ -32,7 +35,9 @@ const SearchUser = () => {
   const [users, setUsers] = useState([]);
   const [countries, setCountries] = useState([]);
   const [languages, setLanguages] = useState([]);
-
+  const pathname = usePathname();
+  const router = useRouter();
+  const currentSearchParams = useSearchParams();
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -71,15 +76,45 @@ const SearchUser = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+    try {
+      console.log("Form Data:", data);
 
-    const response = await fetchAllUsers();
+      const queryParams = [];
 
-    if (response.success) {
-      setUsers(response.users.data);
+      Object.entries(data).forEach(([key, value]) => {
+        if (value) {
+          const encodedValue = value.replace(/ /g, "+");
+
+          if (key === "age") {
+            queryParams.push(`age[lte]=${encodedValue}`);
+          } else {
+            queryParams.push(`${key}=${encodedValue}`);
+          }
+        }
+      });
+
+      const queryString = queryParams.join("&");
+
+      router.push(`${pathname}?${queryString}`);
+
+      console.log(`Updated URL: ${pathname}?${queryString}`);
+
+      // Fetch users based on new search criteria
+      const response = await fetchAllUsers(queryString);
+
+      if (response.success) {
+        toast.success("Searched successfully!");
+
+        setUsers(response.users.data);
+      } else {
+        console.error("Failed to fetch users:", response);
+      }
+
+      console.log("Users are", response.users.data);
+    } catch (error) {
+      toast.error("Searching failed");
+      console.error("Error in onSubmit:", error);
     }
-
-    console.log("Users are", response.users.data);
   };
 
   return (
@@ -92,6 +127,7 @@ const SearchUser = () => {
           options={countries}
           register={register}
           required
+          multiple
         />
 
         <Select

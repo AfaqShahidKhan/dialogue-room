@@ -13,9 +13,9 @@ export async function updateUserData(userData) {
   }
 }
 
-export async function fetchAllUsers() {
+export async function fetchAllUsers(queryString) {
   try {
-    const endpoint = `/users`;
+    const endpoint = `/users?${queryString}`;
     console.log("url is---", endpoint);
 
     // Use apiRequest to fetch users
