@@ -19,7 +19,7 @@ router.patch(
 router.get(
   "/",
   authController.protected,
-  authController.restrictTo("admin"),
+  authController.restrictTo("admin","user"),
   userController.getAllUsers
 );
 

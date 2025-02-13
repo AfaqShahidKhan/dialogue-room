@@ -1,6 +1,6 @@
 import { apiRequest } from "@/utils/api";
 
-export async function   updateUserData(userData) {
+export async function updateUserData(userData) {
   try {
     let user = await apiRequest(`/users/updateMe`, "PATCH", userData);
     user = user.data.user;
@@ -10,5 +10,20 @@ export async function   updateUserData(userData) {
   } catch (error) {
     console.error("Failed to reset password:", error);
     throw error;
+  }
+}
+
+export async function fetchAllUsers() {
+  try {
+    const endpoint = `/users`;
+    console.log("url is---", endpoint);
+
+    // Use apiRequest to fetch users
+    let data = await apiRequest(endpoint, "GET");
+
+    return { success: true, users: data.data };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { success: false, users: [] };
   }
 }
