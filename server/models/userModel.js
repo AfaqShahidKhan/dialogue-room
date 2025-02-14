@@ -34,6 +34,36 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    country: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Non-Binary", "Other"],
+    },
+
+    birthdate: {
+      type: Date,
+      required: [true, "Birthdate is required"],
+    },
+    learningLanguage: {
+      type: [String],
+      validate: {
+        validator: function (value) {
+          return Array.isArray(value) && value.length > 0;
+        },
+        message: "At least one learning language is required.",
+      },
+    },
+    fluentIn: {
+      type: [String],
+      validate: {
+        validator: function (value) {
+          return Array.isArray(value) && value.length > 0;
+        },
+        message: "At least one fluent language is required.",
+      },
+    },
     password: {
       type: String,
       minLength: [4, "Password should have minimum 4 characters"],
@@ -55,12 +85,48 @@ const userSchema = new mongoose.Schema(
     passwordResetExpires: {
       type: Date,
     },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    friendRequests: [
+      {
+        from: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        status: {
+          type: String,
+          enum: ["pending", "accepted", "declined"],
+          default: "pending",
+        },
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   }
 );
+
+// Virtual field to calculate age
+userSchema.virtual("age").get(function () {
+  const currentDate = new Date();
+  const birthDate = new Date(this.birthdate);
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
+  const month = currentDate.getMonth();
+  const birthMonth = birthDate.getMonth();
+
+  if (
+    month < birthMonth ||
+    (month === birthMonth && currentDate.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+});
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
