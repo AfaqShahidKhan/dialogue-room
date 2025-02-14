@@ -1,15 +1,15 @@
-"use client"; // Runs only on the client
+"use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("theme") || "light"
-      : "light"
-  );
+  const [theme, setTheme] = useState("light");
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    setTheme(savedTheme);
+  }, []);
 
   useEffect(() => {
     if (typeof document !== "undefined") {
