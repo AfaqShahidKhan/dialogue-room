@@ -2,6 +2,8 @@ import { apiRequest } from "@/utils/api";
 import Cookies from "js-cookie";
 
 export async function updateUserData(userData) {  
+  console.log(`recieved user data is ${JSON.stringify(userData)}`);
+  
   try {
     let user = await apiRequest(`/users/updateMe`, "PATCH", userData);
     user = user.data.user;

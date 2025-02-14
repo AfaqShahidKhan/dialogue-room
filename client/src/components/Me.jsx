@@ -32,26 +32,53 @@ const Me = () => {
   const [languages, setLanguages] = useState([]);
   const [photoPreview, setPhotoPreview] = useState(null);
 
+  // useEffect(() => {
+  //   const userData = Cookies.get("user");
+  //   if (userData) {
+  //     try {
+  //       const parsedUser = JSON.parse(userData);
+  //       setUser(parsedUser);
+  //       reset(parsedUser);
+  //       setPhotoPreview(
+  //         parsedUser.photo
+  //           ? `http://localhost:8000/images/users/${parsedUser.photo}`
+  //           : null
+  //       );
+
+  //       console.log(`user is ${JSON.stringify(parsedUser.name)}`);
+  //     } catch (error) {
+  //       console.error("Error parsing user data:", error);
+  //     }
+  //   }
+  // }, [reset]);
   useEffect(() => {
     const userData = Cookies.get("user");
     if (userData) {
       try {
         const parsedUser = JSON.parse(userData);
         setUser(parsedUser);
-        reset(parsedUser);
         setPhotoPreview(
           parsedUser.photo
             ? `http://localhost:8000/images/users/${parsedUser.photo}`
             : null
         );
-
-        console.log(`user is ${JSON.stringify(parsedUser.name)}`);
+  
+        // Ensure reset happens after countries & languages are fetched
+        if (countries.length > 0 && languages.length > 0) {
+          reset({
+            ...parsedUser,
+            country: parsedUser.country || "", // Ensure default exists
+            learningLanguage: parsedUser.learningLanguage || [],
+            fluentIn: parsedUser.fluentIn || [],
+          });
+        }
+  
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
     }
-  }, [reset]);
-
+  }, [reset, countries, languages]); // Re-run after countries & languages are fetched
+  
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -99,19 +126,21 @@ const Me = () => {
   const onSubmit = async (data) => {
     console.log("Submitted user data:", data);
     const { password, photo, ...filteredData } = data;
-
+  
     const formData = new FormData();
     for (const key in filteredData) {
       formData.append(key, filteredData[key]);
     }
-    if (photo[0]) {
-      console.log("Photo file:", photo[0]);
-      console.log("Photo name:", photo[0].name);
-      console.log("Photo type:", photo[0].type);
-      console.log("Photo size:", photo[0].size);      
+    if (photo?.[0]) {      
       formData.append("photo", photo[0]);
     }
-
+  
+    // Correct way to log FormData
+    console.log("FormData contents:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+  
     try {
       const result = await updateUserData(formData);
       toast.success("User updated successfully!");
