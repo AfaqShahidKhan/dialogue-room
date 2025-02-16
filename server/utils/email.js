@@ -50,8 +50,8 @@ module.exports = class Email {
   }
 
   async sendWelcome() {
-    const subject = "Welcome to the TODO App!";
-    const text = `Hello ${this.firstName},\n\nWelcome to the TODO app! We're glad to have you on board.`;
+    const subject = "Welcome to the Dialogue Room!";
+    const text = `Hello ${this.firstName},\n\nWelcome to the Dialogue Room! We're glad to have you on board.`;
     await this.sendMail(subject, text);
   }
 

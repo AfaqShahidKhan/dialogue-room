@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import { fetchAllUsers } from "@/store/services/userService";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const selectGenderOption = [
   { label: "Select Gender", value: "" },
@@ -75,6 +76,13 @@ const SearchUser = () => {
     fetchCountries();
   }, []);
 
+
+  const sendFriendRequest = async()=>{
+    console.log('this');
+    
+  }
+
+
   const onSubmit = async (data) => {
     try {
       console.log("Form Data:", data);
@@ -83,12 +91,22 @@ const SearchUser = () => {
 
       Object.entries(data).forEach(([key, value]) => {
         if (value) {
-          const encodedValue = value.replace(/ /g, "+");
-
-          if (key === "age") {
-            queryParams.push(`age[lte]=${encodedValue}`);
+          if (Array.isArray(value)) {
+            // Handle array values (e.g., for the `country` field)
+            value.forEach((val) => {
+              if (val) {
+                const encodedValue = val.replace(/ /g, "+");
+                queryParams.push(`${key}=${encodedValue}`);
+              }
+            });
           } else {
-            queryParams.push(`${key}=${encodedValue}`);
+            // Handle string values
+            const encodedValue = value.replace(/ /g, "+");
+            if (key === "age") {
+              queryParams.push(`age[lte]=${encodedValue}`);
+            } else {
+              queryParams.push(`${key}=${encodedValue}`);
+            }
           }
         }
       });
@@ -104,7 +122,6 @@ const SearchUser = () => {
 
       if (response.success) {
         toast.success("Searched successfully!");
-
         setUsers(response.users.data);
       } else {
         console.error("Failed to fetch users:", response);
@@ -118,65 +135,91 @@ const SearchUser = () => {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto shadow-md rounded-md">
-      <h2 className="text-xl font-bold mb-4">Search Users</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Select
-          label="Country"
-          name="country"
-          options={countries}
-          register={register}
-          required
-          multiple
-        />
+    <>
+      <div className="p-6 max-w-lg mx-auto shadow-md rounded-md">
+        <h2 className="text-xl font-bold mb-4">Search Users</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Select
+            label="Country"
+            name="country"
+            options={countries}
+            register={register}
+            multiple
+          />
 
-        <Select
-          label="Gender"
-          name="gender"
-          options={selectGenderOption}
-          register={register}
-        />
+          <Select
+            label="Gender"
+            name="gender"
+            options={selectGenderOption}
+            register={register}
+          />
 
-        <Input
-          label="Max Age"
-          name="age"
-          type="number"
-          placeholder="Enter maximum age"
-          {...register("age")}
-        />
+          <Input
+            label="Max Age"
+            name="age"
+            type="number"
+            placeholder="Enter maximum age"
+            {...register("age")}
+          />
 
-        <Select
-          label="Learning Language"
-          name="learningLanguage"
-          options={languages}
-          register={register}
-        />
+          <Select
+            label="Learning Language"
+            name="learningLanguage"
+            options={languages}
+            register={register}
+          />
 
-        <Select
-          label="Fluent In"
-          name="fluentIn"
-          options={languages}
-          register={register}
-        />
+          <Select
+            label="Fluent In"
+            name="fluentIn"
+            options={languages}
+            register={register}
+          />
 
-        <Button type="submit" className="w-full">
-          Search
-        </Button>
-      </form>
+          <Button type="submit" className="w-full">
+            Search
+          </Button>
+        </form>
+      </div>
 
-      {users.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Results:</h3>
-          <ul className="space-y-2">
-            {users.map((user) => (
-              <li key={user._id} className="p-2 border rounded-md">
-                {user.name} - {user.country} - {user.age} years old
-              </li>
-            ))}
-          </ul>
+      {users && (
+        <div className="mt-6 mx-auto max-w-6xl px-4">
+        <h3 className="text-xl font-bold mb-4 text-center sm:text-left">Results:</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {users.map((user) => (
+            <div
+              key={user._id}
+              className="flex flex-col items-center sm:flex-row gap-4 p-4 border rounded-lg shadow-sm hover:shadow-md transition-all bg-white"
+            >
+              <Image
+                src={`${
+                  process.env.NEXT_PUBLIC_IMAGE_URL || "http://localhost:8000"
+                }/images/users/${user.photo}`}
+                alt={user.name}
+                width={48}
+                height={48}
+                className="w-16 h-16 rounded-full object-cover border"
+              />
+              <div className="text-center sm:text-left flex-1">
+                <h4 className="text-lg font-semibold">{user.name}</h4>
+                <p className="text-sm text-gray-600">{user.country} - {user.age} years old</p>
+                <p className="text-sm"><span className="font-medium">Fluent In:</span> {user.fluentIn}</p>
+                <p className="text-sm"><span className="font-medium">Interested In:</span> {user.learningLanguage}</p>
+              </div>
+              <button
+                className="mt-2 sm:mt-0 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all"
+                onClick={() => sendFriendRequest(user._id)}
+              >
+                Send Request
+              </button>
+            </div>
+          ))}
         </div>
+      </div>
+      
+      
       )}
-    </div>
+    </>
   );
 };
 

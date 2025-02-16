@@ -3,10 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res) => {
-    const currentUser = req.user;
-    const filter =
-      currentUser.role === "admin" ? {} : { user: req.params.userId };
-    const features = new ApiFeatures(Model.find(filter), req.query)
+    const features = new ApiFeatures(Model.find(), req.query)
       .filter()
       .sort()
       .limitFields()

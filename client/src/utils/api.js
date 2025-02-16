@@ -20,11 +20,17 @@ export async function apiRequest(
       ...headers,
     };
 
+    // const options = {
+    //   method,
+    //   headers: defaultHeaders,
+    //   body: data instanceof FormData ? data : JSON.stringify(data),
+    // };
     const options = {
       method,
       headers: defaultHeaders,
-      body: data instanceof FormData ? data : JSON.stringify(data),
+      ...(method !== "GET" && { body: data instanceof FormData ? data : JSON.stringify(data) }),
     };
+    
 
     const url = `${API_URL}${endpoint}`;
     const response = await fetch(url, options);
