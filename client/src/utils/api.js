@@ -9,25 +9,32 @@ export async function apiRequest(
   headers = {}
 ) {
   try {
-    const token = Cookies.get('token');
+    const token = Cookies.get("token");
 
+    // Default headers (only set JSON if data is not FormData)
     const defaultHeaders = {
-      "Content-Type": "application/json",
-      ...(token && { "Authorization": `Bearer ${token}` }), 
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(data instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json" }),
       ...headers,
     };
 
+    // const options = {
+    //   method,
+    //   headers: defaultHeaders,
+    //   body: data instanceof FormData ? data : JSON.stringify(data),
+    // };
     const options = {
       method,
       headers: defaultHeaders,
+      ...(method !== "GET" && { body: data instanceof FormData ? data : JSON.stringify(data) }),
     };
+    
 
-    if (data) {
-      options.body = JSON.stringify(data);
-    }
     const url = `${API_URL}${endpoint}`;
     const response = await fetch(url, options);
-    console.log('this is response', response);
+    console.log("this is response", response);
 
     if (!response.ok) {
       const errorDetails = await response.json();

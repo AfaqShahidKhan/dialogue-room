@@ -5,7 +5,11 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/ui/Header";
 import { Toaster } from "react-hot-toast";
-import ClientLayout from "./ClientLayout";
+import dynamic from "next/dynamic";
+
+const ClientLayout = dynamic(() => import("./ClientLayout"), {
+  suspense: true,
+});
 
 export const metadata = {
   title: {
@@ -27,8 +31,8 @@ export default function RootLayout({ children }) {
       <body className="transition-colors duration-300">
         <ThemeProvider>
           <ReduxProvider>
+            <Toaster />
             <Suspense fallback={<Loading />}>
-              <Toaster />
               <ClientLayout>{children}</ClientLayout>
             </Suspense>
           </ReduxProvider>

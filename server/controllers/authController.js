@@ -13,13 +13,28 @@ const signInToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { name, email, password, passwordConfirm, role } = req.body;
+  const {
+    name,
+    email,
+    password,
+    passwordConfirm,
+    birthdate,
+    learningLanguage,
+    fluentIn,
+    agree,
+    gender,
+  } = req.body;
   const user = await User.create({
     name,
     email,
     password,
     passwordConfirm,
-    role,
+    birthdate,
+    learningLanguage,
+    fluentIn,
+    agree,
+    gender,
+    // role,
   });
   const token = await signInToken(user._id);
   // console.log(`Ttoken is ${token}`);
