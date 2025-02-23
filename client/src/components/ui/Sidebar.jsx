@@ -52,7 +52,7 @@ const Sidebar = () => {
           isCollapsed={isCollapsed}
         />
         <SidebarItem
-          href="/profile"
+          href="/users/me"
           icon={<FiUser size={24} />}
           text="Profile"
           isCollapsed={isCollapsed}
