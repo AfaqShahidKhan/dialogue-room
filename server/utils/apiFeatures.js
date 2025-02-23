@@ -5,23 +5,40 @@ class ApiFeatures {
   }
 
   filter() {
-    const queryObj = {...this.queryString}
-    const excludedFields = ['page','sort','limit','fields']
-    excludedFields.forEach(el=>delete queryObj[el])
-    let queryStr= JSON.stringify(queryObj)
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match=>`$${match}`)
-    // this.query = this.query.find(JSON.parse(queryStr))
+    const queryObj = { ...this.queryString };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     const parsedQuery = JSON.parse(queryStr);
 
-    // Apply regex filtering for partial title match (case-insensitive)
-    if (parsedQuery.title) {
-        parsedQuery.title = { $regex: new RegExp(parsedQuery.title, "i") };
+    // Convert age filtering into birthdate filtering
+    if (parsedQuery.age) {
+        const currentDate = new Date();
+        if (parsedQuery.age.$gte) {
+            const minBirthdate = new Date(
+                currentDate.getFullYear() - parsedQuery.age.$gte,
+                currentDate.getMonth(),
+                currentDate.getDate()
+            );
+            parsedQuery.birthdate = { ...parsedQuery.birthdate, $lte: minBirthdate };
+        }
+        if (parsedQuery.age.$lte) {
+            const maxBirthdate = new Date(
+                currentDate.getFullYear() - parsedQuery.age.$lte,
+                currentDate.getMonth(),
+                currentDate.getDate()
+            );
+            parsedQuery.birthdate = { ...parsedQuery.birthdate, $gte: maxBirthdate };
+        }
+        delete parsedQuery.age; // Remove age from query since it's virtual
     }
 
     this.query = this.query.find(parsedQuery);
+    return this;
+}
 
-    return this
-  }
 
   sort() {
     if (this.queryString.sort) {

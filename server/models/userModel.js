@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const AppError = require("./../utils/appError");
+const AppError = require("../utils/appError");
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: [true, "Name is required"],
-      minLength: [3, "Name should be of 3 characters or more"],
-      maxLength: [20, "Name should have maximum 20 characters"],
+      minLength: [3, "Name should be at least 3 characters long"],
+      maxLength: [20, "Name should not exceed 20 characters"],
     },
     email: {
       type: String,
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
       required: [true, "Email is required"],
-      validate: [validator.isEmail, "Please write correct email"],
+      validate: [validator.isEmail, "Please enter a valid email"],
     },
     role: {
       type: String,
@@ -41,38 +41,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", "Non-Binary", "Other"],
     },
-
     birthdate: {
       type: Date,
-      required: [true, "Birthdate is required"],
     },
     learningLanguage: {
       type: [String],
-      validate: {
-        validator: function (value) {
-          return Array.isArray(value) && value.length > 0;
-        },
-        message: "At least one learning language is required.",
-      },
+      default: [],
     },
     fluentIn: {
       type: [String],
-      validate: {
-        validator: function (value) {
-          return Array.isArray(value) && value.length > 0;
-        },
-        message: "At least one fluent language is required.",
-      },
+      default: [],
     },
     password: {
       type: String,
-      minLength: [4, "Password should have minimum 4 characters"],
+      minLength: [4, "Password should have at least 4 characters"],
       required: [true, "Password is required"],
       select: false,
     },
     passwordConfirm: {
       type: String,
-      required: [true, "Please Confirm the password"],
+      required: [true, "Please confirm your password"],
       validate: {
         validator: function (el) {
           return el === this.password;
@@ -82,16 +70,13 @@ const userSchema = new mongoose.Schema(
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: {
-      type: Date,
-    },
+    passwordResetExpires: Date,
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-
     friendRequests: [
       {
         from: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -110,21 +95,15 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Virtual field to calculate age
 userSchema.virtual("age").get(function () {
-  const currentDate = new Date();
+  if (!this.birthdate) return null;
+  const today = new Date();
   const birthDate = new Date(this.birthdate);
-  let age = currentDate.getFullYear() - birthDate.getFullYear();
-  const month = currentDate.getMonth();
-  const birthMonth = birthDate.getMonth();
-
-  if (
-    month < birthMonth ||
-    (month === birthMonth && currentDate.getDate() < birthDate.getDate())
-  ) {
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }
-
   return age;
 });
 
@@ -135,28 +114,35 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("save", function (next) {
+  if (
+    !this.isNew &&
+    (!this.birthdate ||
+      this.learningLanguage.length === 0 ||
+      this.fluentIn.length === 0)
+  ) {
+    return next(
+      new AppError(
+        "Please complete your profile with birthdate, learning languages, and fluent languages."
+      )
+    );
+  }
+  next();
+});
+
 userSchema.methods.comparePassword = async function (
   candidatePassword,
   userPassword
 ) {
-  const isCorrect = await bcrypt.compare(candidatePassword, userPassword);
-  // console.log(
-  //   `cadidate p is ${typeof candidatePassword} and user p is ${typeof userPassword} and is correct is ${isCorrect}`
-  // );
-
-  return isCorrect;
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    console.log(
-      `password changed at: ${this.passwordChangedAt}, ${JWTTimestamp}`
-    );
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
       10
     );
-
     return JWTTimestamp < changedTimestamp;
   }
   return false;
