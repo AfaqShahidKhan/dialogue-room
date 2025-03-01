@@ -27,6 +27,18 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem("theme") || "light";
+                document.documentElement.setAttribute("data-theme", theme);
+                document.documentElement.classList.add(theme);
+              })();
+            `,
+          }}
+        />
+
       </head>
       <body className="transition-colors duration-300">
         <ThemeProvider>
