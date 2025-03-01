@@ -9,6 +9,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const path = require("path");
 const userRoute = require("./routes/userRoute");
+const friendshipRoute = require("./routes/friendshipRoute");
 const app = express();
 
 // CORS setup
@@ -43,6 +44,7 @@ app.use(xss());
 
 // Routes
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/users", friendshipRoute);
 
 // Catch-all route for non-existent endpoints
 app.all("*", (req, res, next) => {

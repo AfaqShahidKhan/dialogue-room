@@ -10,6 +10,8 @@ import Select from "@/components/ui/Select";
 import { fetchAllUsers } from "@/store/services/userService";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import UserCard from "./ui/UserCard";
+import { postFriendRequest } from "@/store/services/friendService";
 
 const selectGenderOption = [
   { label: "Select Gender", value: "" },
@@ -77,10 +79,16 @@ const SearchUser = () => {
   }, []);
 
 
-  const sendFriendRequest = async()=>{
-    console.log('this');
+ 
+  const handleSendFriendRequest = async (userId) => {
+    const result = await postFriendRequest(userId);
     
-  }
+    if (result.success) {
+      toast.success(result.message); 
+    } else {
+      toast.error(result.message);
+    }
+  };
 
 
   const onSubmit = async (data) => {
@@ -182,43 +190,16 @@ const SearchUser = () => {
         </form>
       </div>
 
-      {users && (
-        <div className="mt-6 mx-auto max-w-6xl px-4">
+      { users && (
+      <div className="mt-6 mx-auto max-w-6xl px-4">
         <h3 className="text-xl font-bold mb-4 text-center sm:text-left">Results:</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {users.map((user) => (
-            <div
-              key={user._id}
-              className="flex flex-col items-center sm:flex-row gap-4 p-4 border rounded-lg shadow-sm hover:shadow-md transition-all bg-white"
-            >
-              <Image
-                src={`${
-                  process.env.NEXT_PUBLIC_IMAGE_URL || "http://localhost:8000"
-                }/images/users/${user.photo}`}
-                alt={user.name}
-                width={48}
-                height={48}
-                className="w-16 h-16 rounded-full object-cover border"
-              />
-              <div className="text-center sm:text-left flex-1">
-                <h4 className="text-lg font-semibold">{user.name}</h4>
-                <p className="text-sm text-gray-600">{user.country} - {user.age} years old</p>
-                <p className="text-sm"><span className="font-medium">Fluent In:</span> {user.fluentIn}</p>
-                <p className="text-sm"><span className="font-medium">Interested In:</span> {user.learningLanguage}</p>
-              </div>
-              <button
-                className="mt-2 sm:mt-0 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all"
-                onClick={() => sendFriendRequest(user._id)}
-              >
-                Send Request
-              </button>
-            </div>
+            <UserCard key={user._id} user={user} sendFriendRequest={handleSendFriendRequest} />
           ))}
         </div>
       </div>
-      
-      
-      )}
+    )}
     </>
   );
 };
