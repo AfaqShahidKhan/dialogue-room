@@ -8,6 +8,7 @@ const TermsAndConditions = () => {
     <>
       <Header />
       <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">Terms and Conditions</h1>
         <div className="flex justify-center">
           <Image
             src={termsAndConditions}
@@ -18,9 +19,6 @@ const TermsAndConditions = () => {
             className="rounded-lg max-h-[40vh] max-w-[80vw] w-full"
           />
         </div>
-
-        <h1 className="text-3xl font-bold mt-6">Terms and Conditions</h1>
-
         <p className="mt-4 ">
           Welcome to Dialogue Room! By accessing or using our platform, you
           agree to comply with the following Terms and Conditions. Please read
@@ -45,9 +43,9 @@ const TermsAndConditions = () => {
         </h2>
         <p className="">
           We value your privacy. Please review our{" "}
-          <a href="/privacy-policy" className="text-light-accent">
+          <Link href="/privacy-policy"  className="text-light-accent">
             Privacy Policy
-          </a>{" "}
+          </Link>{" "}
           to understand how we handle your data.
         </p>
 
