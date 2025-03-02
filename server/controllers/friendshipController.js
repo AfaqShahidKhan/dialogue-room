@@ -43,26 +43,38 @@ exports.sendFriendRequest = catchAsync(async (req, res, next) => {
 exports.acceptFriendRequest = catchAsync(async (req, res, next) => {
   const { requestId } = req.body;
 
-  const friendRequest = await Friendship.findOne({
-    _id: requestId,
-    recipient: req.user.id,
-    status: "pending",
-  });
-
+  const friendRequest = await Friendship.findOneAndUpdate(
+    { _id: requestId, recipient: req.user.id, status: "pending" },
+    { status: "accepted" },
+    { new: true }
+  );
+  
   if (!friendRequest) {
-    return next(
-      new AppError("Friend request not found or already accepted", 404)
-    );
-  }
-
-  friendRequest.status = "accepted";
-  await friendRequest.save();
+    return next(new AppError("Friend request not found or already accepted", 404));
+  }  
 
   res.status(200).json({
     status: "success",
     data: { friendRequest },
   });
 });
+
+exports.getPendingFriendRequests = catchAsync(async (req, res, next) => {
+  const userId = req.user.id;
+
+  const pendingRequests = await Friendship.find({
+    recipient: userId,
+    status: "pending",
+  })
+    .populate("requester", "name email photo") 
+    .sort({ createdAt: -1 }); 
+
+  res.status(200).json({
+    status: "success",
+    data: { pendingRequests },
+  });
+});
+
 
 // ✅ Get User's Friends
 exports.getUserFriends = catchAsync(async (req, res, next) => {
