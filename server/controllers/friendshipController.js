@@ -4,42 +4,103 @@ const catchAsync = require("../utils/catchAsync");
 const mongoose = require("mongoose");
 
 // ✅ Send Friend Request
-exports.sendFriendRequest = catchAsync(async (req, res, next) => {
-  const { userId } = req.body;
+// exports.sendFriendRequest = catchAsync(async (req, res, next) => {
+//   const { userId } = req.body;
 
-  if (req.user.id === userId) {
-    return next(
-      new AppError("You cannot send a friend request to yourself!", 400)
-    );
-  }
+//   if (req.user.id === userId) {
+//     return next(
+//       new AppError("You cannot send a friend request to yourself!", 400)
+//     );
+//   }
 
-  const existingRequest = await Friendship.findOne({
-    $or: [
-      { requester: req.user.id, recipient: userId },
-      { requester: userId, recipient: req.user.id },
-    ],
-  });
+//   const existingRequest = await Friendship.findOne({
+//     $or: [
+//       { requester: req.user.id, recipient: userId },
+//       { requester: userId, recipient: req.user.id },
+//     ],
+//   });
 
-  if (existingRequest) {
-    if (existingRequest.status === "accepted") {
-      return next(new AppError("You are already friends!", 400));
+//   if (existingRequest) {
+//     if (existingRequest.status === "accepted") {
+//       return next(new AppError("You are already friends!", 400));
+//     }
+//     return next(new AppError("Friend request already exists!", 400));
+//   }
+
+//   const friendRequest = await Friendship.create({
+//     requester: req.user.id,
+//     recipient: userId,
+//     status: "pending",
+//   });
+
+//   res.status(201).json({
+//     status: "success",
+//     data: { friendRequest },
+//   });
+// });
+
+
+exports.sendFriendRequest = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    if (req.user.id === userId) {
+      return res.status(400).json({ message: "You cannot friend yourself" });
     }
-    return next(new AppError("Friend request already exists!", 400));
+
+    const existingRequest = await Friendship.findOne({
+      $or: [
+        { requester: req.user.id, recipient: userId },
+        { requester: userId, recipient: req.user.id },
+      ],
+    });
+
+    if (existingRequest) {
+      return res.status(400).json({ message: "Request already exists" });
+    }
+
+    const newRequest = await Friendship.create({
+      requester: req.user.id,
+      recipient: userId,
+      status: "pending",
+    });
+
+    // Emit event to recipient (if online)
+    const io = req.app.get("io");
+    const recipientSocketId = io.sockets.sockets.get(userId);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("new-friend-request", {
+        senderId: req.user.id,
+        message: "You have a new friend request!",
+      });
+    }
+
+    res.status(201).json({ status: "success", data: newRequest });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-
-  const friendRequest = await Friendship.create({
-    requester: req.user.id,
-    recipient: userId,
-    status: "pending",
-  });
-
-  res.status(201).json({
-    status: "success",
-    data: { friendRequest },
-  });
-});
+};
 
 // ✅ Accept Friend Request
+// exports.acceptFriendRequest = catchAsync(async (req, res, next) => {
+//   const { requestId } = req.body;
+
+//   const friendRequest = await Friendship.findOneAndUpdate(
+//     { _id: requestId, recipient: req.user.id, status: "pending" },
+//     { status: "accepted" },
+//     { new: true }
+//   );
+  
+//   if (!friendRequest) {
+//     return next(new AppError("Friend request not found or already accepted", 404));
+//   }  
+
+//   res.status(200).json({
+//     status: "success",
+//     data: { friendRequest },
+//   });
+// });
+
 exports.acceptFriendRequest = catchAsync(async (req, res, next) => {
   const { requestId } = req.body;
 
@@ -48,10 +109,21 @@ exports.acceptFriendRequest = catchAsync(async (req, res, next) => {
     { status: "accepted" },
     { new: true }
   );
-  
+
   if (!friendRequest) {
     return next(new AppError("Friend request not found or already accepted", 404));
-  }  
+  }
+
+  // Emit event to the sender of the request
+  const io = req.app.get("io"); // Get Socket.io instance
+  const senderSocketId = io.sockets.sockets.get(friendRequest.requester);
+
+  if (senderSocketId) {
+    io.to(senderSocketId).emit("friend-request-accepted", {
+      recipientId: req.user.id,
+      message: "Your friend request has been accepted!",
+    });
+  }
 
   res.status(200).json({
     status: "success",
