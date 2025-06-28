@@ -9,12 +9,14 @@ const PrivacyPolicy = () => {
         <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
         <div className="flex justify-center">
           <Image
-            src="/images/pagesData/PrivacyPolicy.jpg"
+            src="/images/pagesData/privacyPolicy.jpg"
             alt="Privacy Policy"
             width={800}
-            height={450} 
-            style={{ objectFit: "cover" }} 
-            className="rounded-lg max-h-[40vh] max-w-[80vw] w-full"          />
+            height={450}
+            // style={{ objectFit: "cover" }}
+            objectFit="cover"
+            className="rounded-lg max-h-[40vh] max-w-[80vw] w-full"
+          />
         </div>
         <p className="mb-4">
           Welcome to Dialogue Room! Your privacy is important to us. This

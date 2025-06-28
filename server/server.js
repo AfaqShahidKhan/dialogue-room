@@ -32,7 +32,6 @@ mongoose
     process.exit(1);
   });
 
-
 mongoose.connection.on("error", (err) => {
   console.error("❌ MongoDB connection error:", err.message);
 });
@@ -97,7 +96,7 @@ io.on("connection", (socket) => {
 // Attach io to the request object (for controllers)
 app.set("io", io);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 server.listen(port, () => console.log(`🚀 Server running on port ${port}`));
 
 process.on("unhandledRejection", (err) => {

@@ -11,22 +11,22 @@ const homeDataArray = [
   {
     title: "Instant Messaging",
     desc: "Chat with friends or meet new people instantly.",
-    icon: "/icons/message.png",
+    icon: "/Icons/message.png",
   },
   {
     title: "Voice & Video Calls",
     desc: "Connect beyond text with voice and video.",
-    icon: "/icons/camera.png",
+    icon: "/Icons/camera.png",
   },
   {
     title: "Disscussion Rooms",
     desc: "Join open discussions or create private rooms.",
-    icon: "/icons/groupPeople.png",
+    icon: "/Icons/groupPeople.png",
   },
   {
     title: "Language Exchange",
     desc: "Talk to native speakers and improve your skills.",
-    icon: "/icons/language1.png",
+    icon: "/Icons/language1.png",
   },
 ];
 const HomePage = () => {
