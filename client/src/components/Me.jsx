@@ -82,7 +82,7 @@ const Me = () => {
         if (countries.length > 0 && languages.length > 0) {
           reset({
             ...parsedUser,
-            birthdate: formattedBirthdate, 
+            birthdate: formattedBirthdate,
             country: parsedUser.country || "",
             learningLanguage: parsedUser.learningLanguage || [],
             fluentIn: parsedUser.fluentIn || [],
@@ -99,7 +99,7 @@ const Me = () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
-        const countryOptions = data.map((country) => ({
+        const countryOptions = data?.map((country) => ({
           label: country.name.common,
           value: country.name.common,
         }));
