@@ -8,7 +8,7 @@ import React from "react";
 const NotFound = () => {
   const router = useRouter();
 
-  const notFoundImg = "/icons/notFound.png"; 
+  const notFoundImg = "/Icons/notFound.png";
   return (
     <div className="w-full h-screen relative">
       <Header />
