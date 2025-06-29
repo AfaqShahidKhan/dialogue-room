@@ -17,7 +17,7 @@ const Footer = () => {
                 alt="Logo"
                 width={150}
                 height={50}
-                className="mx-auto md:mx-0"
+                className="mx-auto my-auto md:my-0 md:mx-0"
               />
             </Link>
             <p className="mt-4 text-sm">

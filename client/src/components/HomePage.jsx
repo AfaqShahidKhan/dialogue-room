@@ -39,8 +39,9 @@ const HomePage = () => {
           <Image
             src={onlineDiscussion}
             alt="Chat App Hero Background"
-            layout="fill"
-            objectFit="cover"
+            fill
+            priority
+            style={{ objectFit: "cover" }}
             className="opacity-60"
           />
         </div>

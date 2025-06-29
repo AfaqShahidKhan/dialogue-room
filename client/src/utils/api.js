@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export async function apiRequest(
   endpoint,
@@ -28,9 +29,10 @@ export async function apiRequest(
     const options = {
       method,
       headers: defaultHeaders,
-      ...(method !== "GET" && { body: data instanceof FormData ? data : JSON.stringify(data) }),
+      ...(method !== "GET" && {
+        body: data instanceof FormData ? data : JSON.stringify(data),
+      }),
     };
-    
 
     const url = `${API_URL}${endpoint}`;
     const response = await fetch(url, options);
