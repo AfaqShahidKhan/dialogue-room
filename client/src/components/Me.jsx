@@ -95,39 +95,6 @@ const Me = () => {
   }, [reset, countries, languages]);
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch("https://restcountries.com/v3.1/all");
-        const data = await response.json();
-        const countryOptions = data?.map((country) => ({
-          label: country.name.common,
-          value: country.name.common,
-        }));
-        setCountries([
-          { label: "Select Country", value: "" },
-          ...countryOptions,
-        ]);
-
-        const languageSet = new Set();
-        data.forEach((country) => {
-          if (country.languages) {
-            Object.values(country.languages).forEach((lang) =>
-              languageSet.add(lang)
-            );
-          }
-        });
-        const languageOptions = Array.from(languageSet).map((lang) => ({
-          label: lang,
-          value: lang,
-        }));
-        setLanguages([
-          { label: "Select Language", value: "" },
-          ...languageOptions,
-        ]);
-      } catch (error) {
-        console.error("Error fetching countries:", error);
-      }
-    };
     fetchCountries();
   }, []);
 
@@ -135,6 +102,36 @@ const Me = () => {
     const file = event.target.files[0];
     if (file) {
       setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch("https://restcountries.com/v3.1/all");
+      const data = await response.json();
+      const countryOptions = data?.map((country) => ({
+        label: country.name.common,
+        value: country.name.common,
+      }));
+      setCountries([{ label: "Select Country", value: "" }, ...countryOptions]);
+
+      const languageSet = new Set();
+      data.forEach((country) => {
+        if (country.languages) {
+          Object.values(country.languages).forEach((lang) =>
+            languageSet.add(lang)
+          );
+        }
+      });
+      const languageOptions = Array.from(languageSet).map((lang) => ({
+        label: lang,
+        value: lang,
+      }));
+      setLanguages([
+        { label: "Select Language", value: "" },
+        ...languageOptions,
+      ]);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
     }
   };
 
