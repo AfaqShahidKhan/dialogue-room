@@ -1,24 +1,32 @@
 import Image from "next/image";
+import Button from "./ui/Button";
 
 const FriendCard = ({ friend, isRequest, onAccept, onDecline }) => {
   console.log("FriendCard received:", friend);
 
   return (
-    <div className="p-4 border rounded-lg flex items-center gap-4 shadow-sm">
+    <div className="p-4 border rounded-lg flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
       <Image
-        src={friend.photo ? `http://localhost:8000/images/users/${friend.photo}` : "/images/pagesData/default.jpg"}
-        alt={friend.name || "Unknown User"}
+        src={
+          friend.requester.photo
+            ? `http://localhost:8080/images/users/${friend.requester.photo}`
+            : "/images/pagesData/default.jpg"
+        }
+        alt={friend.requester.name || "Unknown User"}
         width={50}
         height={50}
         className="rounded-full"
       />
-      <div className="flex-1">
-        <h3 className="font-semibold">{friend.name || "Unknown User"}</h3>
-        <p className="text-sm">{friend.email || "No email available"}</p>
+      <div className="text-center">
+        <h3 className="font-semibold text-lg text-gray-800">
+          {friend.requester.name || "Unknown User"}
+        </h3>
+        <p className="text-sm text-gray-600">
+          {friend.requester.email || "No email available"}
+        </p>
       </div>
     </div>
   );
 };
-
 
 export default FriendCard;
