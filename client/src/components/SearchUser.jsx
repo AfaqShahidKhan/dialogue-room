@@ -21,6 +21,29 @@ const selectGenderOption = [
   { label: "Other", value: "Other" },
 ];
 
+import countriesData from "@/utils/countryMockData.json";
+
+const countriesOptions = [
+  { label: "Select Country", value: "" },
+  ...countriesData.countries.map((country) => ({
+    label: country.name,
+    value: country.name,
+  })),
+];
+
+const languageSet = new Set();
+countriesData.countries.forEach((country) => {
+  country.languages.forEach((lang) => languageSet.add(lang));
+});
+
+const languageOptions = [
+  { label: "Select Language", value: "" },
+  ...Array.from(languageSet).map((lang) => ({
+    label: lang,
+    value: lang,
+  })),
+];
+
 const SearchUser = () => {
   const {
     register,
@@ -36,60 +59,19 @@ const SearchUser = () => {
     },
   });
   const [users, setUsers] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [languages, setLanguages] = useState([]);
   const pathname = usePathname();
   const router = useRouter();
   const currentSearchParams = useSearchParams();
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch("https://restcountries.com/v3.1/all");
-        const data = await response.json();
-        const countryOptions = data.map((country) => ({
-          label: country.name.common,
-          value: country.name.common,
-        }));
-        setCountries([
-          { label: "Select Country", value: "" },
-          ...countryOptions,
-        ]);
 
-        const languageSet = new Set();
-        data.forEach((country) => {
-          if (country.languages) {
-            Object.values(country.languages).forEach((lang) =>
-              languageSet.add(lang)
-            );
-          }
-        });
-        const languageOptions = Array.from(languageSet).map((lang) => ({
-          label: lang,
-          value: lang,
-        }));
-        setLanguages([
-          { label: "Select Language", value: "" },
-          ...languageOptions,
-        ]);
-      } catch (error) {
-        console.error("Error fetching countries:", error);
-      }
-    };
-    fetchCountries();
-  }, []);
-
-
- 
   const handleSendFriendRequest = async (userId) => {
     const result = await postFriendRequest(userId);
-    
+
     if (result.success) {
-      toast.success(result.message); 
+      toast.success(result.message);
     } else {
       toast.error(result.message);
     }
   };
-
 
   const onSubmit = async (data) => {
     try {
@@ -144,13 +126,16 @@ const SearchUser = () => {
 
   return (
     <>
-      <div className="p-6 max-w-lg mx-auto shadow-md rounded-md">
+      <div className="p-6 shadow-md rounded-md">
         <h2 className="text-xl font-bold mb-4">Search Users</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-5 sm:max-w-screen-sm md:max-w-screen-md mx-auto"
+        >
           <Select
             label="Country"
             name="country"
-            options={countries}
+            options={countriesOptions}
             register={register}
             multiple
           />
@@ -173,14 +158,14 @@ const SearchUser = () => {
           <Select
             label="Learning Language"
             name="learningLanguage"
-            options={languages}
+            options={languageOptions}
             register={register}
           />
 
           <Select
             label="Fluent In"
             name="fluentIn"
-            options={languages}
+            options={languageOptions}
             register={register}
           />
 
@@ -190,16 +175,22 @@ const SearchUser = () => {
         </form>
       </div>
 
-      { users && (
-      <div className="mt-6 mx-auto max-w-6xl px-4">
-        <h3 className="text-xl font-bold mb-4 text-center sm:text-left">Results:</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {users.map((user) => (
-            <UserCard key={user._id} user={user} sendFriendRequest={handleSendFriendRequest} />
-          ))}
+      {users && (
+        <div className="mt-6 mx-auto max-w-6xl px-4">
+          <h3 className="text-xl font-bold mb-4 text-center sm:text-left">
+            Results:
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {users.map((user) => (
+              <UserCard
+                key={user._id}
+                user={user}
+                sendFriendRequest={handleSendFriendRequest}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 };

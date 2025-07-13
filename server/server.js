@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const http = require("http");
 const { Server } = require("socket.io");
 const app = require("./app");
+const { activeUsers } = require("./socketManager");
 
 process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION! Shutting down...");
@@ -46,9 +47,6 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-
-// Store active users
-const activeUsers = new Map();
 
 io.on("connection", (socket) => {
   console.log(`🔌 New user connected: ${socket.id}`);
