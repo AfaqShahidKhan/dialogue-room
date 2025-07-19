@@ -23,7 +23,7 @@ const selectGenderOption = [
 
 import countriesData from "@/utils/countryMockData.json";
 
-const countriesOptions = [
+export const countriesOptions = [
   { label: "Select Country", value: "" },
   ...countriesData.countries.map((country) => ({
     label: country.name,
@@ -36,7 +36,7 @@ countriesData.countries.forEach((country) => {
   country.languages.forEach((lang) => languageSet.add(lang));
 });
 
-const languageOptions = [
+export const languageOptions = [
   { label: "Select Language", value: "" },
   ...Array.from(languageSet).map((lang) => ({
     label: lang,

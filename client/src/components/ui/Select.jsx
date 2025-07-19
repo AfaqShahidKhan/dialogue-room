@@ -29,7 +29,9 @@ const Select = ({
         multiple={multiple}
         size={multiple ? 7 : undefined}
         defaultValue={defaultValue}
-        className={`p-2 border rounded-lg focus:ring-2 outline-none transition duration-300
+        className={`p-2 border rounded-lg ${
+          multiple ? "focus:h-48 h-8 overflow-y-auto" : ""
+        } focus:ring-2 outline-none transition duration-300
           bg-${themeColors}-background text-${themeColors}-foreground
           border-${themeColors}-muted focus:ring-${themeColors}-primary ${className}`}
       >
