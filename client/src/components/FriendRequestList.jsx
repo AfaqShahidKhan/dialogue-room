@@ -1,11 +1,45 @@
-// src/components/FriendRequestList.jsx
-import React from "react";
-import FriendCard from "./FriendCard";
-import { acceptFriendRequest, cancelFriendRequest } from "@/store/services/friendService";
+"use client";
 
-const FriendRequestList = ({ requests, setRequests }) => {
+import { useEffect } from "react";
+import FriendCard from "./FriendCard"; // ← make sure to import
+import {
+  acceptFriendRequest,
+  cancelFriendRequest,
+} from "@/store/services/friendService";
+import { useSocket } from "@/app/providers/SocketProvider";
+
+export default function FriendRequestList({ requests, setRequests }) {
+  const socket = useSocket();
+
+  // Listen for others accepting your sent requests
+  useEffect(() => {
+    if (!socket) return;
+    const onAccepted = ({ recipientId }) => {
+      console.log("Received accept event for:", recipientId);
+      setRequests((prev) =>
+        prev.filter((req) => req.requester._id !== recipientId)
+      );
+    };
+    socket.on("friend-request-accepted", onAccepted);
+    return () => {
+      socket.off("friend-request-accepted", onAccepted);
+    };
+  }, [socket, setRequests]);
+
   const handleAccept = async (id) => {
-    await acceptFriendRequest(id);
+    const { data } = await acceptFriendRequest(id);
+
+    // pull your userId from cookies (same as in SocketProvider)
+    const userId = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("user="))
+      ?.split("=")[1];
+
+    socket?.emit("accept-friend-request", {
+      senderId: data.friendRequest.requester,
+      recipientId: userId,
+    });
+
     setRequests((prev) => prev.filter((req) => req._id !== id));
   };
 
@@ -24,8 +58,8 @@ const FriendRequestList = ({ requests, setRequests }) => {
               key={req._id}
               friend={req}
               isRequest
-              onAccept={handleAccept}
-              onDecline={handleDecline}
+              onAccept={() => handleAccept(req._id)}
+              onDecline={() => handleDecline(req._id)}
             />
           ))
         ) : (
@@ -34,6 +68,4 @@ const FriendRequestList = ({ requests, setRequests }) => {
       </div>
     </div>
   );
-};
-
-export default FriendRequestList;
+}

@@ -1,9 +1,6 @@
 import Image from "next/image";
-import Button from "./ui/Button";
 
 const FriendCard = ({ friend, isRequest, onAccept, onDecline }) => {
-  console.log("FriendCard received:", friend);
-
   return (
     <div className="p-4 border rounded-lg flex flex-col items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
       <Image

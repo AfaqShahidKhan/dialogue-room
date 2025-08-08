@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/ui/Header";
 import { Toaster } from "react-hot-toast";
 import dynamic from "next/dynamic";
+import { SocketProvider } from "./providers/SocketProvider";
 
 const ClientLayout = dynamic(() => import("./ClientLayout"), {
   suspense: true,
@@ -38,14 +39,15 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-
       </head>
       <body className="transition-colors duration-300">
         <ThemeProvider>
           <ReduxProvider>
             <Toaster />
             <Suspense fallback={<Loading />}>
-              <ClientLayout>{children}</ClientLayout>
+              <ClientLayout>
+                <SocketProvider>{children}</SocketProvider>
+              </ClientLayout>
             </Suspense>
           </ReduxProvider>
         </ThemeProvider>

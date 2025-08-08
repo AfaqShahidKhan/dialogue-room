@@ -4,17 +4,14 @@ const catchAsync = require("../utils/catchAsync");
 const mongoose = require("mongoose");
 const { activeUsers } = require("../socketManager");
 
-// Send a friend request
 exports.sendFriendRequest = async (req, res, next) => {
   try {
     const { userId } = req.body;
 
-    // Prevent sending request to self
     if (req.user.id === userId) {
       return res.status(400).json({ message: "You cannot friend yourself" });
     }
 
-    // Check if request already exists in either direction
     const existingRequest = await Friendship.findOne({
       $or: [
         { requester: req.user.id, recipient: userId },
@@ -26,14 +23,12 @@ exports.sendFriendRequest = async (req, res, next) => {
       return res.status(400).json({ message: "Request already exists" });
     }
 
-    // Create a new friend request
     const newRequest = await Friendship.create({
       requester: req.user.id,
       recipient: userId,
       status: "pending",
     });
 
-    // Emit socket event if recipient is online
     const io = req.app.get("io");
     const recipientSocketId = activeUsers.get(userId);
     if (recipientSocketId) {

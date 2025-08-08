@@ -17,6 +17,7 @@ const corsOptions = {
   origin: "http://localhost:3000", // Allow requests from the frontend on port 3000
   methods: ["GET", "POST", "PATCH", "DELETE"], // Allow these HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
+  credentials: true,
 };
 
 app.use(cors(corsOptions)); // Apply CORS middleware globally
