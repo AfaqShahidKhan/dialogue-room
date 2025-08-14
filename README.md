@@ -46,11 +46,14 @@ npm run dev
 - Create a new branch for your changes
   Before making any changes, it’s important to create a new branch. This keeps your changes isolated from the main branch, and makes it easier for the maintainers to review your code.
 
-To create a new branch, use this naming convention: username-001-feature-branch. For example, if your username is johndoe and you're working on a feature, your branch would look like this:
+ To create a new branch, use this naming convention:
+**`<ticket/issue-number>-<short-description>`**
+
+For example, if you’re working on a feature for issue 001, your branch name would be:
 
 ```bash
-git checkout -b johndoe-001-feature-branch
-```
+ git checkout -b 001-feature-branch
+ ```
 
 - Make Your Changes
   Now, you can make the changes you want in the codebase. Whether it’s fixing bugs, improving documentation, or adding features, you can edit the files as needed.
@@ -66,7 +69,7 @@ git commit -m "Fix bug in feature X"
   Once you’ve committed your changes, push them back to your forked repository:
 
 ```bash
-git push origin johndoe-001-feature-branch
+git push origin 001-feature-branch
 ```
 
 - Create a Pull Request
