@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.next/
+*.tsbuildinfo
+
+# env — commit only the .env.example files
+.env
+.env.local
+.env.*.local
+
+# runtime
+apps/api/uploads/*
+!apps/api/uploads/users/
+apps/api/uploads/users/*
+!apps/api/uploads/users/default.jpg
+
+# misc
+.DS_Store
+coverage/

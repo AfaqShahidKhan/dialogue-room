@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9eaff;
+  --color-brand-200: #bcdbff;
+  --color-brand-300: #8ec4ff;
+  --color-brand-400: #59a3ff;
+  --color-brand-500: #3380fc;
+  --color-brand-600: #1d60f1;
+  --color-brand-700: #164bde;
+  --color-brand-800: #183eb4;
+  --color-brand-900: #1a398d;
+  --color-brand-950: #152456;
+
+  --font-sans: var(--font-geist-sans, "Geist"), system-ui, -apple-system,
+    "Segoe UI", Inter, Roboto, sans-serif;
+
+  /* Marketing art direction: golden amber (CTAs, chips, accents) */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+
+  /* Marketing art direction: soft sky blue (single accent word, decoration) */
+  --color-sky-200: #bae6fd;
+  --color-sky-300: #93c5fd;
+  --color-sky-400: #7dd3fc;
+
+  /* Warm charcoal panel tones for the always-dark marketing canvas */
+  --color-charcoal-950: #16181b;
+  --color-charcoal-900: #1a1d21;
+  --color-charcoal-800: #212428;
+  --color-charcoal-700: #2a2e33;
+  --color-charcoal-600: #34383e;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0b1220;
+  --foreground: #e2e8f0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@keyframes blob-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, -4%) scale(1.05);
+  }
+  66% {
+    transform: translate(-3%, 3%) scale(0.97);
+  }
+}
+.animate-blob {
+  animation: blob-float 18s ease-in-out infinite;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+.dark .scrollbar-thin {
+  scrollbar-color: rgb(51 65 85) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225);
+  border-radius: 9999px;
+}
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(51 65 85);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in-fade {
+  animation: fade-in 150ms ease-out;
+}
+
+/* Marketing surface: always-dark canvas, independent of the app theme toggle */
+.marketing-surface {
+  background: var(--color-charcoal-950);
+  color: #f1f5f9;
+  color-scheme: dark;
+}
+
+@keyframes cloud-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(2%, -6%);
+  }
+}
+.animate-cloud-drift {
+  animation: cloud-drift 9s ease-in-out infinite;
+}
+

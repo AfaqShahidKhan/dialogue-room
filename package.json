@@ -1,0 +1,19 @@
+{
+  "name": "dialogue-room",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Dialogue Room — a language-exchange communication platform (monorepo)",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @dialogue-room/api --filter @dialogue-room/web dev",
+    "dev:api": "pnpm --filter @dialogue-room/api dev",
+    "dev:web": "pnpm --filter @dialogue-room/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @dialogue-room/api test",
+    "seed": "pnpm --filter @dialogue-room/api seed"
+  }
+}
